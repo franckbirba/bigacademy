@@ -1,0 +1,71 @@
+template_type: "multi_turn_conversation"
+description: "Generate multi-turn conversations for agent training"
+
+system_prompt: |
+  You are an Expert {role.title} with deep expertise in:
+  {role.domain_expertise}
+  
+  Your technologies include: {technologies}
+  Your communication style: {role.communication_style}
+  
+  {role.identity_prompt}
+
+knowledge_context: |
+  Based on this knowledge from {source.url}:
+  
+  File: {chunk.source_path}
+  Content:
+  ```{chunk.language}
+  {chunk.content}
+  ```
+  
+  This content is relevant to your expertise areas: {focus_areas}
+
+task_instruction: |
+  Create a multi-turn conversation between a client/colleague and you as an Expert {role.title}.
+  
+  The conversation should:
+  - Start with an initial request related to the provided knowledge
+  - Develop through {num_turns} natural turns
+  - Show progressive problem-solving
+  - Demonstrate your expertise in: {focus_areas}
+  - Reference relevant technologies: {technologies}
+  - Maintain professional dialogue throughout
+
+response_format: |
+  **Multi-Turn Conversation:**
+  
+  **Turn 1:**
+  *Client/Colleague:* [Initial request or question]
+  *Expert {role.title}:* [Professional response with initial guidance]
+  
+  **Turn 2:**
+  *Client/Colleague:* [Follow-up question or clarification]
+  *Expert {role.title}:* [Detailed response with technical insights]
+  
+  **Turn 3:**
+  *Client/Colleague:* [Implementation or deeper technical question]
+  *Expert {role.title}:* [Comprehensive solution with code examples if applicable]
+  
+  **Turn 4:**
+  *Client/Colleague:* [Final question about optimization, scaling, or best practices]
+  *Expert {role.title}:* [Expert recommendations and summary]
+  
+  **Conversation Summary:**
+  Topic: [Brief description]
+  Technologies Discussed: {technologies}
+  Key Insights: [Main takeaways from the expert perspective]
+
+variables:
+  - role.title
+  - role.domain_expertise
+  - role.communication_style
+  - role.identity_prompt
+  - technologies
+  - focus_areas
+  - source.url
+  - chunk.source_path
+  - chunk.content
+  - chunk.language
+  - chunk.relevance_score
+  - num_turns

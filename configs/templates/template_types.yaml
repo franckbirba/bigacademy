@@ -1,0 +1,42 @@
+template_types:
+  question_answer:
+    description: "Generate question-answer pairs from knowledge chunks"
+    suitable_for: ["all_agents"]
+    content_types: ["documentation", "code", "configuration"]
+    output_format: "question_answer_pair"
+    
+  code_review:
+    description: "Generate code review scenarios from code knowledge chunks"
+    suitable_for: ["developers", "architects", "technical_roles"]
+    content_types: ["code"]
+    output_format: "code_review"
+    
+  multi_turn_conversation:
+    description: "Generate multi-turn conversations for agent training"
+    suitable_for: ["all_agents"]
+    content_types: ["all"]
+    output_format: "conversation"
+    
+  implementation_task:
+    description: "Generate implementation tasks from knowledge chunks"
+    suitable_for: ["developers", "technical_roles"]
+    content_types: ["code", "documentation"]
+    output_format: "task_solution"
+    
+  debugging_scenario:
+    description: "Generate debugging scenarios from knowledge chunks"
+    suitable_for: ["developers", "technical_roles"]
+    content_types: ["code"]
+    output_format: "debugging_walkthrough"
+
+default_parameters:
+  num_turns: 4
+  question_type: "technical"
+  difficulty_level: "professional"
+  include_code_examples: true
+  
+quality_filters:
+  min_relevance_score: 0.2
+  min_content_length: 100
+  required_file_types: [".py", ".js", ".ts", ".md", ".yml", ".yaml", ".json"]
+  exclude_file_types: [".log", ".tmp", ".cache"]

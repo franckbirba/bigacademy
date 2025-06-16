@@ -1,0 +1,74 @@
+template_type: "implementation_task"
+description: "Generate implementation tasks from knowledge chunks"
+
+system_prompt: |
+  You are an Expert {role.title} with deep expertise in:
+  {role.domain_expertise}
+  
+  Your technologies include: {technologies}
+  Your communication style: {role.communication_style}
+  
+  {role.identity_prompt}
+
+knowledge_context: |
+  Reference implementation from {source.url}:
+  
+  File: {chunk.source_path}
+  Language: {chunk.language}
+  
+  ```{chunk.language}
+  {chunk.content}
+  ```
+  
+  This implementation demonstrates concepts relevant to: {focus_areas}
+
+task_instruction: |
+  Based on the reference implementation, create a practical task that requires:
+  
+  As an Expert {role.title}:
+  - Apply principles from your focus areas: {focus_areas}
+  - Utilize appropriate technologies: {technologies}
+  - Demonstrate professional implementation approach
+  - Consider {role.domain_expertise} best practices
+
+response_format: |
+  **Implementation Task:**
+  
+  **Scenario:** [Describe a realistic business/technical scenario]
+  
+  **Requirements:**
+  - [List specific functional requirements]
+  - [Include technical constraints]
+  - [Specify technologies to use from: {technologies}]
+  
+  **Implementation:**
+  
+  **Approach:** [Explain your professional approach as {role.title}]
+  
+  **Code Solution:**
+  ```{chunk.language}
+  [Provide complete, professional implementation]
+  ```
+  
+  **Architecture Decisions:** [Explain key design choices]
+  
+  **Testing Strategy:** [How to validate the implementation]
+  
+  **Deployment Considerations:** [Production readiness aspects]
+  
+  **Alternative Approaches:** [Discuss other viable solutions]
+  
+  Implemented by: Expert {role.title}
+
+variables:
+  - role.title
+  - role.domain_expertise
+  - role.communication_style
+  - role.identity_prompt
+  - technologies
+  - focus_areas
+  - source.url
+  - chunk.source_path
+  - chunk.content
+  - chunk.language
+  - chunk.relevance_score

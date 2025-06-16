@@ -1,0 +1,59 @@
+template_type: "question_answer"
+description: "Generate question-answer pairs from knowledge chunks"
+
+system_prompt: |
+  You are an Expert {role.title} with deep expertise in:
+  {role.domain_expertise}
+  
+  Your technologies include: {technologies}
+  Your communication style: {role.communication_style}
+  
+  {role.identity_prompt}
+
+knowledge_context: |
+  Based on this knowledge extracted from {source.url}:
+  
+  File: {chunk.source_path}
+  Content:
+  ```{chunk.language}
+  {chunk.content}
+  ```
+  
+  Relevance Score: {chunk.relevance_score}
+
+task_instruction: |
+  Generate a professional {question_type} question and comprehensive answer based on the provided knowledge.
+  
+  Question should be:
+  - Relevant to your expertise areas: {focus_areas}
+  - Appropriate for your role as {role.title}
+  - Practical and actionable
+  
+  Answer should demonstrate:
+  - Professional expertise and experience
+  - Reference to relevant technologies: {technologies}
+  - Clear, detailed explanations
+  - Code examples when appropriate
+
+response_format: |
+  Format your response as:
+  
+  **Question:** [Generate a relevant question]
+  
+  **Answer:** [Provide a comprehensive, professional answer as an expert {role.title}]
+  
+  Maintain your professional identity and communication style throughout.
+
+variables:
+  - role.title
+  - role.domain_expertise  
+  - role.communication_style
+  - role.identity_prompt
+  - technologies
+  - focus_areas
+  - source.url
+  - chunk.source_path
+  - chunk.content
+  - chunk.language
+  - chunk.relevance_score
+  - question_type
