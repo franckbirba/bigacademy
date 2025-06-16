@@ -10,8 +10,9 @@ sqlite3  # Built into Python
 # Knowledge extraction
 gpt-repository-loader>=0.1.0
 
-# Dataset generation (when available)
-# distilabel>=1.0.0  # Uncomment when implementing LLM integration
+# Dataset generation and annotation
+argilla>=1.15.0
+distilabel>=1.0.0
 
 # Development and testing
 pytest>=7.0.0

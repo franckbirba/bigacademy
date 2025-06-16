@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  # Argilla UI for dataset management and annotation
+  argilla:
+    image: argilla/argilla-server:latest
+    container_name: bigacademy-argilla
+    ports:
+      - "6900:6900"
+    environment:
+      - ARGILLA_HOME_PATH=/var/lib/argilla
+      - ARGILLA_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ARGILLA_AUTH_SECRET_KEY=bigacademy-secret-key
+      - ARGILLA_DEFAULT_USER_ENABLED=true
+      - ARGILLA_DEFAULT_USER_PASSWORD=bigacademy123
+      - ARGILLA_DEFAULT_USER_API_KEY=bigacademy-api-key
+      - ARGILLA_ENABLE_TELEMETRY=false
+    volumes:
+      - argilla_data:/var/lib/argilla
+    depends_on:
+      - elasticsearch
+    networks:
+      - bigacademy-network
+    restart: unless-stopped
+
+  # Elasticsearch for Argilla backend
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.2
+    container_name: bigacademy-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - bigacademy-network
+    restart: unless-stopped
+
+  # BigAcademy CLI workspace with Argilla integration
+  bigacademy-cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bigacademy-cli
+    environment:
+      - ARGILLA_API_URL=http://argilla:6900
+      - ARGILLA_API_KEY=bigacademy-api-key
+      - ARGILLA_WORKSPACE=bigacademy
+      - PYTHONPATH=/app
+    volumes:
+      - ./configs:/app/configs
+      - ./datasets:/app/datasets
+      - ./test_data:/app/test_data
+      - ./scripts:/app/scripts
+      - bigacademy_data:/app/data
+    depends_on:
+      - argilla
+    networks:
+      - bigacademy-network
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  # Jupyter Lab for experimentation and analysis
+  jupyter:
+    image: jupyter/datascience-notebook:latest
+    container_name: bigacademy-jupyter
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=bigacademy
+      - GRANT_SUDO=yes
+      - CHOWN_HOME=yes
+    volumes:
+      - ./notebooks:/home/jovyan/work/notebooks
+      - ./bigacademy:/home/jovyan/work/bigacademy
+      - ./configs:/home/jovyan/work/configs
+      - ./datasets:/home/jovyan/work/datasets
+      - ./scripts:/home/jovyan/work/scripts
+    user: root
+    networks:
+      - bigacademy-network
+    restart: unless-stopped
+
+networks:
+  bigacademy-network:
+    driver: bridge
+
+volumes:
+  argilla_data:
+    driver: local
+  elasticsearch_data:
+    driver: local
+  bigacademy_data:
+    driver: local
